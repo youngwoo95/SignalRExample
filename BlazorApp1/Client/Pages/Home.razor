@@ -1,0 +1,126 @@
+﻿@page "/home"
+
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+
+<PageTitle>Home</PageTitle>
+
+<div class="room-list">
+    @*
+    @foreach (var room in rooms)
+    {
+        <button @onclick="() => JoinRoom(room)">@room</button>
+    }
+    *@
+    <button @onclick="JoinRoom1">룸1</button>
+    <button @onclick="JoinRoom2">룸2</button>
+    <button @onclick="JoinRoom3">룸3</button>
+    
+    <button @onclick="RemoveRoom1">룸1 해제</button>
+    <button @onclick="RemoveRoom2">룸2 해제</button>
+    <button @onclick="RemoveRoom3">룸3 해제</button>
+
+
+</div>
+
+<div class="chat">
+   
+        @foreach (var message in messages)
+        {
+            <li>@message</li>
+        }
+
+    <input type="text" @bind-value="messageInput">
+    <button @onclick="Send">Send</button>
+</div>
+
+@code {
+    private HubConnection? hubConnection;
+    private List<string> rooms = new List<string>();
+    private List<string> messages = new List<string>();
+    private string? userInput;
+    private string? messageInput;
+
+    public string type { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        // 관리자 ID
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/chathub")
+             )
+
+            .Build();
+
+        hubConnection.On<string>("ReceiveMessage", (message) =>
+        {
+            messages.Add(message);
+            StateHasChanged();
+        });
+
+        rooms.AddRange(new[] { "Room1", "Room2", "Room3" });
+
+        await hubConnection.StartAsync();
+    }
+
+    private async Task JoinRoom1()
+    {
+        type = "Room1";
+        await hubConnection.InvokeAsync("JoinRoomAsync", type);
+    }
+    private async Task JoinRoom2()
+    {
+        type = "Room2";
+        await hubConnection.InvokeAsync("JoinRoomAsync", type);
+    }
+    private async Task JoinRoom3()
+    {
+        type = "Room3";
+        await hubConnection.InvokeAsync("JoinRoomAsync", type);
+    }
+    private async Task RemoveRoom1()
+    {
+        type = "Room1";
+        await hubConnection.InvokeAsync("RemoveRoomAsync", type);
+    }
+    
+    private async Task RemoveRoom2()
+    {
+        type = "Room2";
+        await hubConnection.InvokeAsync("RemoveRoomAsync", type);
+    }
+
+    private async Task RemoveRoom3()
+    {
+        type = "Room3";
+        await hubConnection.InvokeAsync("RemoveRoomAsync", type);
+    }
+
+    private async Task Send()
+    {
+        if (!string.IsNullOrEmpty(messageInput))
+        {
+            await hubConnection.InvokeAsync("SendMessageAsync", messageInput, GetCurrentRoom());
+            messages.Add($"You: {messageInput}");
+            messageInput = "";
+            StateHasChanged();
+        }
+    }
+
+    private string GetCurrentRoom()
+    {
+        return type;
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
