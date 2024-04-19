@@ -6,6 +6,7 @@
 
 <PageTitle>Home</PageTitle>
 
+
 <div class="room-list">
     @*
     @foreach (var room in rooms)
@@ -64,37 +65,44 @@
         await hubConnection.StartAsync();
     }
 
+    int i = 0;
     private async Task JoinRoom1()
     {
+        /* testid 부분은 필요없을수도 */
         type = "Room1";
-        await hubConnection.InvokeAsync("JoinRoomAsync", type);
+        await hubConnection.InvokeAsync("JoinRoomAsync","testid", type);
     }
     private async Task JoinRoom2()
     {
+        /* testid 부분은 필요없을수도 */
         type = "Room2";
-        await hubConnection.InvokeAsync("JoinRoomAsync", type);
+        await hubConnection.InvokeAsync("JoinRoomAsync", "testid", type);
     }
     private async Task JoinRoom3()
     {
+        /* testid 부분은 필요없을수도 */
         type = "Room3";
-        await hubConnection.InvokeAsync("JoinRoomAsync", type);
+        await hubConnection.InvokeAsync("JoinRoomAsync", "testid", type);
     }
     private async Task RemoveRoom1()
     {
+        /* testid 부분은 필요없을수도 */
         type = "Room1";
-        await hubConnection.InvokeAsync("RemoveRoomAsync", type);
+        await hubConnection.InvokeAsync("RemoveRoomAsync", "testid", type);
     }
     
     private async Task RemoveRoom2()
     {
+        /* testid 부분은 필요없을수도 */
         type = "Room2";
-        await hubConnection.InvokeAsync("RemoveRoomAsync", type);
+        await hubConnection.InvokeAsync("RemoveRoomAsync", "testid", type);
     }
 
     private async Task RemoveRoom3()
     {
+        /* testid 부분은 필요없을수도 */
         type = "Room3";
-        await hubConnection.InvokeAsync("RemoveRoomAsync", type);
+        await hubConnection.InvokeAsync("RemoveRoomAsync", "testid", type);
     }
 
     private async Task Send()
