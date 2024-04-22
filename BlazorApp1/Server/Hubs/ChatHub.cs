@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BlazorApp1.Server.Hubs
 {
+
     public class ChatHub : Hub
     {
         public async Task JoinRoomAsync(string userid, string roomName)
         {
             // DB 검증로직 
             //          - 필요없을수도
+            //          - DB의 USERID 의 실제권한.
             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
             
             await Clients.Group(roomName).SendAsync("ReceiveMessage", $"{Context.ConnectionId} has joined the room {roomName}");

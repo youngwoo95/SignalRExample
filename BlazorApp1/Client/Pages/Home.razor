@@ -38,7 +38,7 @@
 
 @code {
     private HubConnection? hubConnection;
-    private List<string> rooms = new List<string>();
+    //private List<string> rooms = new List<string>();
     private List<string> messages = new List<string>();
     private string? userInput;
     private string? messageInput;
@@ -60,7 +60,7 @@
             StateHasChanged();
         });
 
-        rooms.AddRange(new[] { "Room1", "Room2", "Room3" });
+        //rooms.AddRange(new[] { "Room1", "Room2", "Room3" });
 
         await hubConnection.StartAsync();
     }
@@ -69,6 +69,7 @@
     private async Task JoinRoom1()
     {
         /* testid 부분은 필요없을수도 */
+        // - 현재 세션의 ID
         type = "Room1";
         await hubConnection.InvokeAsync("JoinRoomAsync","testid", type);
     }
